@@ -70,13 +70,25 @@ jobs:
           cd terraform
           terraform plan -out=tfplan
 
+      - name: Upload Terraform Plan
+        uses: actions/upload-artifact@v3
+        with:
+          name: tfplan
+          path: terraform/tfplan
+
   terraform_apply:
     needs: terraform_plan
-    if: github.event_name == 'workflow_dispatch'
+    if: github.event_name == 'workflow_dispatch' || github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Download Terraform Plan
+        uses: actions/download-artifact@v3
+        with:
+          name: tfplan
+          path: terraform
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
