@@ -51,16 +51,24 @@ jobs:
           terraform_version: "1.7.0"
 
       - name: Terraform Init
-        run: terraform init
+        run: |
+          cd terraform
+          terraform init
 
       - name: Terraform Format
-        run: terraform fmt -check
+        run: |
+          cd terraform
+          terraform fmt -check
 
       - name: Terraform Validate
-        run: terraform validate
+        run: |
+          cd terraform
+          terraform validate
 
       - name: Terraform Plan
-        run: terraform plan -out=tfplan
+        run: |
+          cd terraform
+          terraform plan -out=tfplan
 
   terraform_apply:
     needs: terraform_plan
@@ -76,7 +84,11 @@ jobs:
           terraform_version: "1.7.0"
 
       - name: Terraform Init
-        run: terraform init
+        run: |
+          cd terraform
+          terraform init
 
       - name: Terraform Apply
-        run: terraform apply -auto-approve tfplan 
+        run: |
+          cd terraform
+          terraform apply -auto-approve tfplan 
