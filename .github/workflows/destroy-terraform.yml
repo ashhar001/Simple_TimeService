@@ -20,11 +20,22 @@ jobs:
         with:
           terraform_version: "1.11.1"
 
+      - name: Show AWS Credentials (for debugging)
+        run: |
+          echo "AWS Region: $AWS_DEFAULT_REGION"
+          echo "AWS Access Key ID: ${AWS_ACCESS_KEY_ID:0:4}..."
+
       - name: Terraform Init
         run: |
           cd terraform
           terraform init -input=false
         continue-on-error: false
+
+      - name: Show Current State
+        run: |
+          cd terraform
+          terraform state list
+          terraform show
 
       - name: Terraform Plan
         run: |
