@@ -25,10 +25,10 @@ jobs:
           cd terraform
           terraform init
 
-      - name: Terraform Apply (to recreate state)
-        run: |
-          cd terraform
-          terraform apply -auto-approve
+      # - name: Terraform Apply (to recreate state)
+      #   run: |
+      #     cd terraform
+      #     terraform apply -auto-approve
 
       - name: Terraform Destroy
         run: |

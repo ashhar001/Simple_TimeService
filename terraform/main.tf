@@ -11,13 +11,13 @@ terraform {
     }
   }
 
-  # backend "s3" {
-  #   bucket         = "simple-app-service-terraform-state"
-  #   key            = "terraform/env/dev/terraform.tfstate"
-  #   region         = "us-east-1"
-  #   dynamodb_table = "simple-app-terraform-locks"
-  #   encrypt        = true
-  # }
+  backend "s3" {
+    bucket         = "simple-app-service-terraform-state"
+    key            = "terraform/env/dev/terraform.tfstate"
+    region         = "us-east-1"
+    dynamodb_table = "simple-app-terraform-locks"
+    encrypt        = true
+  }
 }
 
 # Configure the AWS Provider
