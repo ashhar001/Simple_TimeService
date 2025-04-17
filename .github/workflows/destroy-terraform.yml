@@ -10,7 +10,9 @@ env:
 
 jobs:
   terraform_destroy:
+    name: Terraform Destroy
     runs-on: ubuntu-latest
+    timeout-minutes: 90
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -36,31 +38,20 @@ jobs:
         run: |
           cd terraform
           echo "Fetching EKS cluster credentials..."
-          aws eks update-kubeconfig --name Simple-App-Cluster --region us-east-2
+          aws eks update-kubeconfig --name Simple-App-Cluster --region $AWS_DEFAULT_REGION
           echo "Deleting all services of type LoadBalancer..."
           kubectl delete svc --all
         continue-on-error: true
 
-      - name: Delete Node Groups
+      - name: Terraform Plan Destroy
         run: |
           cd terraform
-          echo "Destroying EKS node groups..."
-          terraform destroy -target=module.eks.module.eks_managed_node_group["eks_nodes"] -auto-approve
-          echo "Waiting for node groups to be fully terminated..."
-          sleep 180
+          echo "Running destroy plan to see what resources will be removed..."
+          terraform plan -destroy -out=tfdestroyplan
 
-      - name: Delete EKS Cluster
+      - name: Destroy All Resources
         run: |
           cd terraform
-          echo "Destroying EKS cluster and related resources..."
-          terraform destroy -target=module.eks -auto-approve
-          echo "Waiting for EKS cluster to be fully terminated..."
-          sleep 180
-
-      - name: Delete Remaining Infrastructure
-        run: |
-          cd terraform
-          echo "Destroying remaining infrastructure..."
-          terraform destroy -auto-approve
+          echo "Destroying all infrastructure resources..."
+          terraform apply -auto-approve tfdestroyplan
         timeout-minutes: 60
-        
