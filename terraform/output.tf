@@ -34,7 +34,7 @@ output "cluster_ca_certificate" {
   value       = module.eks.cluster_certificate_authority_data
 }
 
-# output "simpletimeservice_endpoint" {
-#   description = "The DNS name of the load balancer for the SimpleTimeService"
-#   value       = kubernetes_service.simpletimeservice.status.0.load_balancer.0.ingress.0.hostname
-# }
+output "simpletimeservice_endpoint" {
+  description = "The DNS name of the load balancer for the SimpleTimeService"
+  value       = kubernetes_service.simpletimeservice.status.0.load_balancer.0.ingress.0.hostname
+}
