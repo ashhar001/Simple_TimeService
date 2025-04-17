@@ -9,7 +9,7 @@ terraform {
     region = "us-east-2"
 
     # State locking configuration (using DynamoDB)
-    use_lockfile = "terraform-locks-522814697098"
+    dynamodb_table = "terraform-locks-522814697098"
 
     # Enable server-side encryption
     encrypt = true
