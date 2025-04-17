@@ -156,4 +156,3 @@ resource "kubernetes_service" "simpletimeservice" {
     }
   }
 }
-
