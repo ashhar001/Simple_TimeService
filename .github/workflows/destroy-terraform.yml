@@ -20,32 +20,46 @@ jobs:
         with:
           terraform_version: "1.11.1"
 
-      - name: Show AWS Credentials (for debugging)
+      - name: Configure AWS CLI
         run: |
-          echo "AWS Region: $AWS_DEFAULT_REGION"
-          echo "AWS Access Key ID: ${AWS_ACCESS_KEY_ID:0:4}..."
+          aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
+          aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
+          aws configure set region $AWS_DEFAULT_REGION
 
       - name: Terraform Init
         run: |
           cd terraform
-          terraform init -input=false
+          terraform init
         continue-on-error: false
 
-      - name: Show Current State
+      - name: Delete Kubernetes Services (LoadBalancers)
         run: |
           cd terraform
-          terraform state list
-          terraform show
+          echo "Fetching EKS cluster credentials..."
+          aws eks update-kubeconfig --name Simple-App-Cluster --region us-east-2
+          echo "Deleting all services of type LoadBalancer..."
+          kubectl delete svc --all
+        continue-on-error: true
 
-      - name: Terraform Plan
+      - name: Delete Node Groups
         run: |
           cd terraform
-          terraform plan -destroy -out=tfplan
-        continue-on-error: false
+          echo "Destroying EKS node groups..."
+          terraform destroy -target=module.eks.module.eks_managed_node_group["eks_nodes"] -auto-approve
+          echo "Waiting for node groups to be fully terminated..."
+          sleep 180
 
-      - name: Terraform Destroy
+      - name: Delete EKS Cluster
         run: |
           cd terraform
+          echo "Destroying EKS cluster and related resources..."
+          terraform destroy -target=module.eks -auto-approve
+          echo "Waiting for EKS cluster to be fully terminated..."
+          sleep 180
+
+      - name: Delete Remaining Infrastructure
+        run: |
+          cd terraform
+          echo "Destroying remaining infrastructure..."
           terraform destroy -auto-approve
-        continue-on-error: false
-        timeout-minutes: 30 
+        timeout-minutes: 60
