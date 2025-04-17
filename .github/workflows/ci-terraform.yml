@@ -34,7 +34,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ env.DOCKERHUB_USERNAME }}/my-app:${{ github.sha }}
+          tags: ashhar001/simple-time-service:v1.0.0
 
   terraform_plan:
     needs: build_and_push
