@@ -1,30 +1,37 @@
 name: Destroy Terraform
 
+# Trigger the workflow manually
 on:
   workflow_dispatch:
 
+# Define environment variables for AWS credentials and region
 env:
   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
   AWS_DEFAULT_REGION: 'us-east-2'
 
+# Job to destroy Terraform infrastructure
 jobs:
   terraform_destroy:
     runs-on: ubuntu-latest
     steps:
+      # Checkout the code in the repository
       - name: Checkout code
         uses: actions/checkout@v4
 
+      # Setup Terraform with a specific version
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: "1.11.1"
 
+      # Initialize Terraform in the 'terraform' directory
       - name: Terraform Init
         run: |
           cd terraform
           terraform init
 
+      # Destroy Terraform infrastructure with auto-approval
       - name: Terraform Destroy
         run: |
           cd terraform

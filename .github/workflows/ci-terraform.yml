@@ -1,11 +1,13 @@
 name: CI Terraform
 
+# Trigger the workflow on push events to the 'main' branch and on manual dispatch
 on:
   push:
     branches:
       - main
   workflow_dispatch:
 
+# Define environment variables for Docker Hub and AWS credentials
 env:
   DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
   DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -13,6 +15,7 @@ env:
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
   AWS_DEFAULT_REGION: 'us-east-2'
 
+# Job to build and push a Docker image
 jobs:
   docker:
     name: Build & Push Docker Image
@@ -38,8 +41,9 @@ jobs:
           push: true
           tags: ${{ env.DOCKERHUB_USERNAME }}/simple-time-service:v.1.0.0
 
+  # Job to plan Terraform infrastructure
   terraform_plan:
-    needs: docker
+    needs: docker # This job depends on the 'docker' job
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -76,9 +80,10 @@ jobs:
           name: tfplan
           path: terraform/tfplan
 
+  # Job to apply Terraform infrastructure
   terraform_apply:
-    needs: terraform_plan
-    if: github.event_name == 'workflow_dispatch' || github.ref == 'refs/heads/main'
+    needs: terraform_plan # This job depends on the 'terraform_plan' job
+    if: github.event_name == 'workflow_dispatch' || github.ref == 'refs/heads/main' # Conditional execution based on event
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code

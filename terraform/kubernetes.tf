@@ -1,7 +1,10 @@
-
+# Configuring the Kubernetes provider with EKS cluster details
 provider "kubernetes" {
+  # Using the EKS cluster endpoint from the module output
   host                   = module.eks.cluster_endpoint
+  # Decoding the base64 encoded cluster CA certificate from the module output
   cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
+  # Configuring the exec plugin for authentication
   exec {
     api_version = "client.authentication.k8s.io/v1beta1"
     command     = "aws"
@@ -9,13 +12,14 @@ provider "kubernetes" {
   }
 }
 
-
+# Creating a local variable to store the subnet IDs as a comma-separated string
 locals {
   subnet_ids_string = join(",", module.vpc.public_subnets)
 }
 
-# deployment configuration
+# Defining a Kubernetes deployment for the SimpleTimeService application
 resource "kubernetes_deployment" "simpletimeservice" {
+  # Ensuring the deployment is created after the EKS cluster is ready
   depends_on = [module.eks]
 
   metadata {
@@ -118,14 +122,14 @@ resource "kubernetes_deployment" "simpletimeservice" {
     }
   }
 
-
   lifecycle {
     create_before_destroy = true
   }
 }
 
-
+# Defining a Kubernetes service for the SimpleTimeService application
 resource "kubernetes_service" "simpletimeservice" {
+  # Ensuring the service is created after the deployment is ready
   depends_on = [kubernetes_deployment.simpletimeservice]
 
   metadata {
