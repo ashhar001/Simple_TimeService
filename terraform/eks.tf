@@ -50,14 +50,14 @@ module "eks" {
       min_size     = 1 # Minimum number of nodes
 
       subnet_ids    = module.vpc.private_subnets # Subnets for the nodes
-      instance_type = "t3.xlarge" # Instance type for the nodes
-      key_name      = var.key_pair # Key pair for the nodes
+      instance_type = "t3.xlarge"                # Instance type for the nodes
+      key_name      = var.key_pair               # Key pair for the nodes
     }
   }
 
   # Tags for the cluster
   tags = {
-    Environment = "dev" # Environment tag
+    Environment = "dev"  # Environment tag
     Terraform   = "true" # Tag indicating Terraform management
   }
 }

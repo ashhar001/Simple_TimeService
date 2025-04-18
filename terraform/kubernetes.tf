@@ -1,7 +1,7 @@
 # Configuring the Kubernetes provider with EKS cluster details
 provider "kubernetes" {
   # Using the EKS cluster endpoint from the module output
-  host                   = module.eks.cluster_endpoint
+  host = module.eks.cluster_endpoint
   # Decoding the base64 encoded cluster CA certificate from the module output
   cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
   # Configuring the exec plugin for authentication

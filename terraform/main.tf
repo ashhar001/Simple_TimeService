@@ -3,12 +3,12 @@ terraform {
   required_version = ">= 1.11.1"
   required_providers {
     aws = {
-      source  = "hashicorp/aws"
+      source = "hashicorp/aws"
       # Specifying the version range for the AWS provider
       version = "~> 5.90.0"
     }
     kubernetes = {
-      source  = "hashicorp/kubernetes"
+      source = "hashicorp/kubernetes"
       # Specifying the version range for the Kubernetes provider
       version = "~> 2.36.0"
     }
