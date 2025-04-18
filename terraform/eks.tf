@@ -12,7 +12,7 @@ module "eks" {
 
   enable_cluster_creator_admin_permissions = true
   # Disable KMS encryption to avoid alias conflicts
-  create_kms_key = false
+  create_kms_key            = false
   cluster_encryption_config = {}
 
   cluster_addons = {
