@@ -11,6 +11,9 @@ module "eks" {
   cluster_endpoint_public_access = true
 
   enable_cluster_creator_admin_permissions = true
+  # Disable KMS encryption to avoid alias conflicts
+  create_kms_key = false
+  cluster_encryption_config = {}
 
   cluster_addons = {
     coredns                = {}
