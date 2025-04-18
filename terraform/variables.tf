@@ -22,7 +22,7 @@ variable "cluster_version" {
 variable "vpc_name" {
   description = "Name for the VPC"
   type        = string
-  default     = "SimpletTimeService-eks-vpc"
+  default     = "SimpletTimeService-eks-VPC"
 }
 
 variable "key_pair" {
